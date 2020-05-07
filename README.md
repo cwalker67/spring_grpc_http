@@ -9,18 +9,9 @@ More detail about this project at [here](https://medium.com/@thinhda/build-servi
 ## Prerequisites
 
 - Java 8
-- Docker 18.09 or later
-- Maven 3
+- Bazel
 
 ## Getting Started
-
-### Get started with Docker
-
-```sh
-# take a long time for first times to pull dependencies
-DOCKER_BUILDKIT=1 docker build -t spring_grpc_http .
-docker run --name spring_grpc_http --rm -d -p 6789:6789 -p 6790:6790 spring_grpc_http
-```
 
 ### Get started with Java
 
@@ -29,10 +20,10 @@ docker run --name spring_grpc_http --rm -d -p 6789:6789 -p 6790:6790 spring_grpc
 cd core
 
 # use maven to build
-mvn clean package
+bazel build //src/main/java:spring_grpc_http_springboot
 
 # run binary by java command
-java -jar target/app.jar
+java -jar bazel-bin/src/main/java/spring_grpc_http_springboot.jar
 ```
 
 ### Validate
@@ -51,8 +42,8 @@ curl --location --request POST 'http://localhost:6789/api/ping' \
 #   "timestamp": "20",
 #   "message": "Pong"
 # }
-   
-``` 
+
+```
 
 ## Benchmark
 
@@ -61,11 +52,6 @@ Use simple [go client](benchmark/main.go)
 ```
 go run main.go
 ```
-
-Hardware Configurations:
-
-- Macbook pro 2017 Intel Core i5 2.3GHz
-- 16GB RAM
 
 Results
 

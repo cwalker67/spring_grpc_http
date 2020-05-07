@@ -87,10 +87,12 @@ func postRequest(method string, url string) {
 	req.Header.Add("Content-Type", "application/json")
 
 	res, err := client.Do(req)
-	checkErr(err)
+//	checkErr(err)
 
-	defer res.Body.Close()
-	_, err = ioutil.ReadAll(res.Body)
+    if err == nil {
+ 	      defer res.Body.Close()
+	      _, err = ioutil.ReadAll(res.Body)
+    }
 
 	if err != nil {
 		fmt.Errorf("Error request: %s", err)

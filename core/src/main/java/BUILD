@@ -1,4 +1,5 @@
 load("@bazel_springboot_rule//tools/springboot:springboot.bzl", "springboot")
+load("@io_bazel_rules_docker//container:container.bzl", "container_image")
 
 APP_DEPS = [
     "//src/main/proto:ping_java_proto",
@@ -86,4 +87,14 @@ springboot(
     boot_app_class = "com.thinhda.spring.grpc.core.CoreApplication",
     java_library = ":application_lib",
     deps = APP_DEPS + ["//src/main/resources:resources"],
+)
+
+
+container_image(
+    name = "spring_grpc_http_docker",
+    base = "@java_base//image",
+    ports = ["6790","6789"],
+    files = [":spring_grpc_http_springboot"],
+    repository = "spring_grpc_http",
+    cmd = ["spring_grpc_http_springboot.jar"],
 )

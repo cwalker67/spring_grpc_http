@@ -4,6 +4,13 @@ RULES_JVM_EXTERNAL_TAG = "3.0"
 RULES_JVM_EXTERNAL_SHA = "62133c125bf4109dfd9d2af64830208356ce4ef8b165a6ef15bbff7460b35c3a"
 
 http_archive(
+    name = "io_bazel_rules_docker",
+    sha256 = "dc97fccceacd4c6be14e800b2a00693d5e8d07f69ee187babfd04a80a9f8e250",
+    strip_prefix = "rules_docker-0.14.1",
+    urls = ["https://github.com/bazelbuild/rules_docker/releases/download/v0.14.1/rules_docker-v0.14.1.tar.gz"],
+)
+
+http_archive(
     name = "io_grpc_grpc_java",
     sha256 = "446ad7a2e85bbd05406dbf95232c7c49ed90de83b3b60cb2048b0c4c9f254d29",
     strip_prefix = "grpc-java-1.29.0",
@@ -59,3 +66,28 @@ load("@io_grpc_grpc_java//:repositories.bzl", "grpc_java_repositories")
 # Run grpc_java_repositories after compat_repositories to ensure the
 # maven_install-selected dependencies are used.
 grpc_java_repositories()
+
+load(
+    "@io_bazel_rules_docker//repositories:repositories.bzl",
+    container_repositories = "repositories",
+)
+container_repositories()
+
+# This is NOT needed when going through the language lang_image
+# "repositories" function(s).
+load("@io_bazel_rules_docker//repositories:deps.bzl", container_deps = "deps")
+
+container_deps()
+
+load(
+    "@io_bazel_rules_docker//container:container.bzl",
+    "container_pull",
+)
+
+container_pull(
+  name = "java_base",
+  registry = "gcr.io",
+  repository = "distroless/java",
+  # 'tag' is also supported, but digest is encouraged for reproducibility.
+  #digest = "sha256:deadbeef",
+)
